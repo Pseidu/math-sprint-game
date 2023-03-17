@@ -8,13 +8,13 @@
   --primary-color: rgb(124, 19, 5);
   --select-color: rgb(124, 19, 5);
   --success: rgb(15, 158, 2);
-  --danger: rgb(214, 195, 23);
+  --danger: rgb(216, 30, 30);
 }
 
 body {
   margin: 0;
   font-family: PT Mono, sans-serif;
-  overflow: hidden;
+  /*overflow: hidden;*/
   display: flex;
   justify-content: center;
   height: 100vh;
@@ -127,11 +127,13 @@ label {
   height: 552px;
   overflow-y: scroll;
   position: relative;
-  -ms-overflow-style: none;
+  /*Hide scrollbars but keep functionality */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .item-container::-webkit-scrollbar {
-  display: none;
+  display: none; /* Safari, Chrome and Opera */
 }
 
 .item {
@@ -176,7 +178,7 @@ button {
   height: 50px;
   border-radius: 5px;
   font-size: 25px;
-  font-family: Oxanium, sans-serif;
+  font-family: Gorditas, sans-serif;
   color: white;
   border: none;
   outline: none;
@@ -244,7 +246,7 @@ button:active {
 .final-time {
   font-size: 100px;
   margin: 0;
-  color: var(--success);
+  color: var(--primary-color);
 }
 
 .base-time {
