@@ -21,6 +21,7 @@ const playAgainBtn = document.querySelector('.play-again');
 // Equations
 let questionAmount = 0;
 let equationsArray = [];
+let playerGuessArray = [];
 
 // Game Page
 let firstNumber = 0;
@@ -29,8 +30,60 @@ let equationObject = {};
 const wrongFormat = [];
 
 // Time
+let timer;
+let timePlayed = 0;
+let baseTime = 0;
+let penaltyTime = 0;
+let finalTime = 0;
+let finalTimeDisplay = '0.0s';
 
 // Scroll
+let valueY = 0;
+
+// Stop Timer, process results, go to the score page
+function checkTime() {
+  console.log('timePlayed:', timePlayed);
+  if (playerGuessArray.length == questionAmount) {
+    console.log('player guess array:', playerGuessArray);
+    clearInterval(timer);
+    // Check for wrong guesses, add penalty time
+    equationsArray.forEach((equation, index) => {
+      if (equation.evaluated === playerGuessArray[index]) {
+        // Correct guess. No penalty
+      } else {
+        // Incorrect guess. Add penalty
+        penaltyTime += 0.5;
+      }
+    });
+    finalTime = timePlayed + penaltyTime;
+    console.log('time', timePlayed, 'penalty', penaltyTime, 'final', finalTime);
+  }
+}
+
+// Add a tenth of a second to timePlayed
+function addTime() {
+  timePlayed += 0.1;
+  checkTime();
+}
+
+// Start timer when game page is clicked
+function startTimer() {
+  //Reset times
+  timePlayed = 0;
+  penaltyTime = 0;
+  finalTime = 0;
+  timer = setInterval(addTime, 100);
+  gamePage.removeEventListener('click', startTimer);
+}
+
+// Scroll, store user selection in playerGessArray
+function select(guessedTrue) {
+  // Scroll 80 pixels
+  valueY += 80;
+  itemContainer.scroll(0, valueY);
+  // Add player guess to array
+  return guessedTrue ? playerGuessArray.push('true') : playerGuessArray.push('false');
+}
 
 // Displays Game Page
 function showGamePage() {
@@ -53,8 +106,8 @@ function createEquations() {
   console.log('wrong equations:', wrongEquations);
   // Loop through, multiply random numbers up to 9, push to array
   for (let i = 0; i < correctEquations; i++) {
-    firstNumber = getRandomInt(9);
-    secondNumber = getRandomInt(9);
+    firstNumber = getRandomInt(10);
+    secondNumber = getRandomInt(10);
     const equationValue = firstNumber * secondNumber;
     const equation = `${firstNumber} x ${secondNumber} = ${equationValue}`;
     equationObject = { value: equation, evaluated: 'true' };
@@ -62,8 +115,8 @@ function createEquations() {
   }
   // Loop through, mess with the equation results, push to array
   for (let i = 0; i < wrongEquations; i++) {
-    firstNumber = getRandomInt(9);
-    secondNumber = getRandomInt(9);
+    firstNumber = getRandomInt(10);
+    secondNumber = getRandomInt(10);
     const equationValue = firstNumber * secondNumber;
     wrongFormat[0] = `${firstNumber} x ${secondNumber + 1} = ${equationValue}`;
     wrongFormat[1] = `${firstNumber} x ${secondNumber} = ${equationValue - 1}`;
@@ -171,3 +224,4 @@ startForm.addEventListener('click', () => {
 });
 
 startForm.addEventListener('submit', selectQuestionAmount);
+gamePage.addEventListener('click', startTimer);
